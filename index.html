@@ -798,23 +798,14 @@
       var btn = form.querySelector('button');
       if (!email) return;
 
-      // Disable form while submitting
       btn.disabled = true;
       btn.textContent = '...';
       emailInput.disabled = true;
 
-      fetch('https://api.beehiiv.com/v2/publications/pub_c21bffdf-e7d0-4cef-b666-a86b8d538e4c/subscriptions', {
+      fetch('/.netlify/functions/subscribe', {
         method: 'POST',
-        headers: {
-          'Authorization': 'Bearer UVYrkfnjhoiPGYzYA0mvSua5TXbKt5BhXl9Oi6BzQ7yuLcKS2aXyCxCDqWYILWwZ',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: email,
-          send_welcome_email: true,
-          utm_source: 'theadsn.com',
-          referring_site: 'https://theadsn.com'
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email })
       })
       .then(function(res) { return res.json(); })
       .then(function(data) {
@@ -822,7 +813,6 @@
           btn.textContent = 'Subscribed!';
           btn.style.background = '#16a34a';
           emailInput.value = '';
-          // Close overlay if it's the popup form
           if (form.closest('.newsletter-overlay')) {
             setTimeout(function() {
               document.getElementById('newsletterOverlay').classList.add('hidden');
