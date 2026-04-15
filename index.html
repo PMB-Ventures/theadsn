@@ -798,6 +798,9 @@
 
   </div><!-- end main-layout -->
 
+  <!-- Hidden iframe for beehiiv form submission -->
+  <iframe name="beehiiv-frame" style="display:none;"></iframe>
+
   <script>
     function handleSubscribe(form, e) {
       e.preventDefault();
@@ -810,39 +813,48 @@
       btn.textContent = '...';
       emailInput.disabled = true;
 
-      fetch('/.netlify/functions/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email })
-      })
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        if (data.data && data.data.id) {
-          btn.textContent = 'Subscribed!';
-          btn.style.background = '#16a34a';
-          emailInput.value = '';
-          if (form.closest('.newsletter-overlay')) {
-            setTimeout(function() {
-              document.getElementById('newsletterOverlay').classList.add('hidden');
-            }, 1500);
-          }
-        } else {
-          btn.textContent = 'Error';
-          btn.style.background = '#b91c1c';
-        }
-      })
-      .catch(function() {
-        btn.textContent = 'Error';
-        btn.style.background = '#b91c1c';
-      })
-      .finally(function() {
+      // Create a hidden form that submits to beehiiv via iframe
+      var hiddenForm = document.createElement('form');
+      hiddenForm.method = 'POST';
+      hiddenForm.action = 'https://adsn.beehiiv.com/create';
+      hiddenForm.target = 'beehiiv-frame';
+      hiddenForm.style.display = 'none';
+
+      var fields = {
+        email: email,
+        utm_source: 'theadsn.com',
+        referring_site: 'https://theadsn.com',
+        sent_from_orchid: 'true'
+      };
+
+      for (var key in fields) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = fields[key];
+        hiddenForm.appendChild(input);
+      }
+
+      document.body.appendChild(hiddenForm);
+      hiddenForm.submit();
+      document.body.removeChild(hiddenForm);
+
+      btn.textContent = 'Subscribed!';
+      btn.style.background = '#16a34a';
+      emailInput.value = '';
+
+      if (form.closest('.newsletter-overlay')) {
+        setTimeout(function() {
+          document.getElementById('newsletterOverlay').classList.add('hidden');
+        }, 1500);
+      }
+
+      setTimeout(function() {
         emailInput.disabled = false;
         btn.disabled = false;
-        setTimeout(function() {
-          btn.textContent = 'Subscribe';
-          btn.style.background = '';
-        }, 3000);
-      });
+        btn.textContent = 'Subscribe';
+        btn.style.background = '';
+      }, 3000);
     }
   </script>
 </body>
