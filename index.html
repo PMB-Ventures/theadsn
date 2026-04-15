@@ -810,7 +810,7 @@
       btn.textContent = '...';
       emailInput.disabled = true;
 
-      fetch('https://api.beehiiv.com/v2/publications/pub_c21bffdf-e7d0-4cef-b666-a86b8d538e4c/subscriptions', {
+      fetch('https://corsproxy.io/?' + encodeURIComponent('https://api.beehiiv.com/v2/publications/pub_c21bffdf-e7d0-4cef-b666-a86b8d538e4c/subscriptions'), {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer oPJkG7A8tHatrPFPg5b908hmmzF3RXgI5acR1qWIIuur4nFk2vPlMFEOe2DT8g66',
