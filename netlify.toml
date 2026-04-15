@@ -5,24 +5,24 @@
 # Redirect beehiiv newsletter routes to beehiiv's hosting
 [[redirects]]
   from = "/p/*"
-  to = "https://theadsn.beehiiv.com/p/:splat"
+  to = "https://newsletter.theadsn.com/p/:splat"
   status = 302
   force = true
 
 [[redirects]]
   from = "/subscribe"
-  to = "https://theadsn.beehiiv.com/subscribe"
+  to = "https://newsletter.theadsn.com/subscribe"
   status = 302
   force = true
 
 [[redirects]]
   from = "/unsubscribe"
-  to = "https://theadsn.beehiiv.com/unsubscribe"
+  to = "https://newsletter.theadsn.com/unsubscribe"
   status = 302
   force = true
 
 [[redirects]]
   from = "/confirm"
-  to = "https://theadsn.beehiiv.com/confirm"
+  to = "https://newsletter.theadsn.com/confirm"
   status = 302
   force = true
