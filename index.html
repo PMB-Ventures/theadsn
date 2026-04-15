@@ -640,9 +640,7 @@
       Subscribe to<br>ADSN's Free<br>Newsletter
     </h2>
     <p>Get the latest episodes, interviews, and subscriber-only content delivered to your inbox.</p>
-    <form class="email-form" action="https://adsn.beehiiv.com/create" method="POST" target="_blank">
-      <input type="hidden" name="sent_from_orchid" value="true">
-      <input type="hidden" name="utm_source" value="theadsn.com">
+    <form class="email-form" onsubmit="handleSubscribe(this, event)">
       <input type="email" name="email" placeholder="Name@email.com" required>
       <button type="submit">Subscribe</button>
     </form>
@@ -693,9 +691,7 @@
       <!-- Email Signup -->
       <h2 class="section-heading">Get ADSN Delivered</h2>
       <div class="sidebar-email-section">
-        <form class="sidebar-email-form" action="https://adsn.beehiiv.com/create" method="POST" target="_blank">
-          <input type="hidden" name="sent_from_orchid" value="true">
-          <input type="hidden" name="utm_source" value="theadsn.com">
+        <form class="sidebar-email-form" onsubmit="handleSubscribe(this, event)">
           <input type="email" name="email" placeholder="Name@email.com" required>
           <button type="submit">Subscribe</button>
         </form>
@@ -801,6 +797,62 @@
     </div>
 
   </div><!-- end main-layout -->
+
+  <script>
+    function handleSubscribe(form, e) {
+      e.preventDefault();
+      var emailInput = form.querySelector('input[type="email"]');
+      var email = emailInput.value.trim();
+      var btn = form.querySelector('button');
+      if (!email) return;
+
+      btn.disabled = true;
+      btn.textContent = '...';
+      emailInput.disabled = true;
+
+      fetch('https://api.beehiiv.com/v2/publications/pub_c21bffdf-e7d0-4cef-b666-a86b8d538e4c/subscriptions', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer oPJkG7A8tHatrPFPg5b908hmmzF3RXgI5acR1qWIIuur4nFk2vPlMFEOe2DT8g66',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email,
+          send_welcome_email: true,
+          utm_source: 'theadsn.com',
+          referring_site: 'https://theadsn.com'
+        })
+      })
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (data.data && data.data.id) {
+          btn.textContent = 'Subscribed!';
+          btn.style.background = '#16a34a';
+          emailInput.value = '';
+          if (form.closest('.newsletter-overlay')) {
+            setTimeout(function() {
+              document.getElementById('newsletterOverlay').classList.add('hidden');
+            }, 1500);
+          }
+        } else {
+          btn.textContent = 'Error';
+          btn.style.background = '#b91c1c';
+        }
+      })
+      .catch(function() {
+        btn.textContent = 'Error';
+        btn.style.background = '#b91c1c';
+      })
+      .finally(function() {
+        emailInput.disabled = false;
+        btn.disabled = false;
+        setTimeout(function() {
+          btn.textContent = 'Subscribe';
+          btn.style.background = '';
+        }, 3000);
+      });
+    }
+  </script>
 
 </body>
 </html>
